@@ -8,6 +8,6 @@
     if($connect->connect_error){
         header("Location: install.php");
     }else{
-        header("Location: dashboard/");
+        header("Location: login/");
     }
 ?>

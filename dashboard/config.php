@@ -10,6 +10,4 @@
         }
         return $cnx;
     }
-
-	connect();
 ?>

@@ -1,3 +1,43 @@
+<?php
+    session_start();
+    
+    if($_SERVER['REQUEST_METHOD'] == 'POST'){
+        $email = isset($_POST['ci-email']) ? strip_tags($_POST['ci-email']) : null;
+        $pass = isset($_POST['ci-pass']) ? strip_tags($_POST['ci-pass']) : null;
+
+        $error = "";
+        if(!empty($email) && !empty($pass)){
+            if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+                require_once '../dashboard/config.php';
+                $db = connect();
+
+                $result = $db->query("SELECT * FROM utilisateur WHERE email = '{$email}'");
+                if($result->num_rows == 1){
+                    $user = $result->fetch_object();
+                    if(password_verify($pass, $user->password)){
+                        $loggedAt = date('Y-m-d h:i:s');
+                        $db->query("UPDATE utilisateur SET loggedAt = '{$loggedAt}' WHERE id = '{$user->id}'");
+
+                        $_SESSION['ci_id'] = $user->id;
+                        $_SESSION['ci_fullname'] = $user->fullname;
+                        $_SESSION['ci_last_log'] = $loggedAt;
+
+                        header('Location: ../dashboard');
+                    }else{
+                        $error = "le mot de passe entré est incorrect";
+                    }
+                }else{
+                    $error = "s'il vous plaît assurez-vous d'entrer les informations correctes";
+                }
+            }else{
+                $error = "s'il vous plaît assurez-vous d'entrer le bon email";
+            }
+        }else{
+            $error = "s'il vous plaît assurez-vous de remplir tous les champs";
+        }
+    }
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -32,11 +72,11 @@
                 <p class="login-box-msg">S'identifier</p>
                 <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
                     <div class="form-group has-feedback">
-                        <input type="email" class="form-control" placeholder="Email">
+                        <input name="ci-email" type="email" class="form-control" placeholder="Aresse e-mail">
                         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                     </div>
                     <div class="form-group has-feedback">
-                        <input type="password" class="form-control" placeholder="Password">
+                        <input name="ci-pass" type="password" class="form-control" placeholder="Mot de passe">
                         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                     </div>
                     <div class="row">
@@ -47,6 +87,9 @@
                         <!-- /.col -->
                     </div>
                 </form>
+                <?php if(isset($error)): ?>
+                <p class="text-danger"><?= $error ?></p>
+                <?php endif; ?>
                 <hr/>
                 <a href="/login/reset.php">J'ai oublié mon mot de passe</a><br>
             </div>

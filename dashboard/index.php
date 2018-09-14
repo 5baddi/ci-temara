@@ -1,4 +1,6 @@
 <?php
+    session_start();
+
     require_once 'config.php';
     require_once 'functions.php';
     $action = isset($_GET['action']) ? strip_tags($_GET['action']) : null;

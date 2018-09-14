@@ -333,3 +333,15 @@
             <script type="text/javascript">function toExcel(){$("#theTable").tableExport({type:"excel",escape:"false",tableName:"Resultat",ignoreColumn: [2,3]});}</script>
             <script type="text/javascript">function toPDF(){$("#theTable").tableExport({type:"pdf",escape:"false",tableName:"Resultat",ignoreColumn: [2,3],pdfFontSize:"14"});}</script>';
     }
+
+
+    /**
+     * Is Logged In
+     * check if the current is user is authenticated or not
+     *
+     * @return boolean
+     */
+    function isLoggedIn()
+    {
+
+    }
