@@ -325,11 +325,11 @@
     }
     
     function getReadyToExport(){
-        echo'<script type="text/javascript" src="assets/js/tableExport.js"></script>
-            <script type="text/javascript" src="assets/js/jquery.base64.js"></script>
-            <script type="text/javascript" src="assets/js/libs/base64.js"></script>
-            <script type="text/javascript" src="assets/js/libs/sprintf.js"></script>
-            <script type="text/javascript" src="assets/js/jspdf.js"></script>
+        echo'<script type="text/javascript" src="../assets/js/tableExport.js"></script>
+            <script type="text/javascript" src="../assets/js/jquery.base64.js"></script>
+            <script type="text/javascript" src="../assets/js/libs/base64.js"></script>
+            <script type="text/javascript" src="../assets/js/libs/sprintf.js"></script>
+            <script type="text/javascript" src="../assets/js/jspdf.js"></script>
             <script type="text/javascript">function toExcel(){$("#theTable").tableExport({type:"excel",escape:"false",tableName:"Resultat",ignoreColumn: [2,3]});}</script>
             <script type="text/javascript">function toPDF(){$("#theTable").tableExport({type:"pdf",escape:"false",tableName:"Resultat",ignoreColumn: [2,3],pdfFontSize:"14"});}</script>';
     }

@@ -5,12 +5,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>CI Application</title>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <link rel="stylesheet" href="assets/css/own.css">
-  <link rel="icon" type="image/png" href="assets/favicon.png"/>
+  <link rel="stylesheet" href="../assets/css/own.css">
+  <link rel="icon" type="image/png" href="../assets/favicon.png"/>
   
-  <script src="assets/js/jquery.min.js" type="text/javascript"></script>
-  <script src="assets/js/schema.js" type="text/javascript"></script> 
-  <script src="assets/js/jspdf.js" type="text/javascript"></script>
+  <script src="../assets/js/jquery.min.js" type="text/javascript"></script>
+  <script src="../assets/js/schema.js" type="text/javascript"></script> 
+  <script src="../assets/js/jspdf.js" type="text/javascript"></script>
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -44,7 +44,7 @@
   <aside class="main-sidebar">
     <section class="sidebar">
         <div class="image">
-            <img src="assets/img/CI-Temara.png" class="img-responsive" alt="User Image">
+            <img src="../assets/img/CI-Temara.png" class="img-responsive" alt="User Image">
         </div>
         <ul class="sidebar-menu">
             <li class="header">Menu</li>
