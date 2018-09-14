@@ -1391,12 +1391,13 @@ function uploader(){
         }
     });
 }
+
 function charger_fichier()
 {
 	//alert("xvcbcvssssbcvbcvb");
 	xmlHttp1=LoadXHR();	
 
-	if (xmlHttp1==null)
+	if (xmlHttp1 == null)
 	{
 		 alert ("Browser does not support HTTP Request");
 		 return;
@@ -1786,10 +1787,10 @@ if (xmlHttp1.readyState==4 || xmlHttp1.readyState=="complete")
 
 function listeAcharger() 
 { 
-if (xmlHttp1.readyState==4 || xmlHttp1.readyState=="complete")
- { 
- 	document.getElementById("iddivcont").innerHTML=xmlHttp1.responseText;
- } 
+	if (xmlHttp1.readyState==4 || xmlHttp1.readyState=="complete")
+	{ 
+		document.getElementById("iddivcont").innerHTML=xmlHttp1.responseText;
+	} 
 }
 //fonction qui controle le Cr�ation des sections
 /* function test(route){

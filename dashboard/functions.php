@@ -62,9 +62,9 @@
     
     
     // Notification & erros functions
-    function full_td($msg){
-        $type = $type ? null : "error";
-        $colspan = $colspan ? null : 3;
+    function full_td($msg, $type = 'error', $colspan = 3){
+        //$type = isset($type) ? null : "error";
+        //$colspan = isset($colspan) ? null : 3;
         // Print string msg as table without lose the style and align of the table
         switch($type)
         {
@@ -77,19 +77,23 @@
         echo '<tr><td colspan="3"><i class="fa fa-4x fa-'.$icon.' '.$style.'"></i><p class="'.$style.'">'.$msg.'</p></td></tr>';
     }
     
-    function tr(array $msg){
+    function tr(array $msg, bool $echo = true){
+        $tr = "";
         // This function print an array as table
         // Syntax : echo '<tr><td>'.$i++.'</td><td>'.$Entry.'</td><td>'.$filpdf[1].'</td></tr>';
         if(($size = sizeof($msg)) > 1)
         {
             $r = 0;
-            echo '<tr>';//<td>'.$i++.'</td><td>'.$Entry.'</td><td>'.$filpdf[1].'</td>';
+            $tr .= '<tr>';//<td>'.$i++.'</td><td>'.$Entry.'</td><td>'.$filpdf[1].'</td>';
             while($r < $size){
-                echo '<td>'.$msg[$r].'</td>';
+                $tr .= '<td>'.$msg[$r].'</td>';
                 $r++;
             }
-            echo '</tr>';
+            $tr .= '</tr>';
         }
+
+        if($echo) echo $tr;
+        else return $tr;
     }
     
     // Pagination
@@ -224,12 +228,11 @@
         $connect = connect();
         if(!$connect->multi_query($sql)) 
         {
-            $msg = "Multi query failed: (".$connect->errno.") ".$connect->error;
-            full_td($msg);
+            return full_td("Multi query failed: (".$connect->errno.") ".$connect->error);
         }
+
         do{
             if ($res = $connect->store_result()) {
-                var_dump($res->fetch_all(MYSQLI_ASSOC));
                 $res->free();
             }
         }while($connect->more_results() && $connect->next_result());
@@ -253,18 +256,14 @@
     
     function ScanDirectory($Directory){
         global $file_existe;					
-        //echo $liste_numero;
-        /* for ($i = 0; $i <= $nb_element-1; $i++) {						
-            echo $ann[$i]."_".$numer[$i].".pdf";
-        } */
         $MyDirectory = opendir($Directory) or die('Erreur');
         $compteur = count_files($Directory);			
-        $sql=null;
-        $nbel=1;
+        $sql = "";
+        $nbel = 1;
         
-        deletett();
+        //deletett();
         // Order Desc from new to the old
-        $i = count_files($Directory)+1;
+        $i = 0;
         // to order by Asc change the previous to : $i = 0; 
         while($Entry = @readdir($MyDirectory)) 
         {
@@ -278,34 +277,30 @@
             }else 
             {
                 $extension = strtolower(pathinfo($DirE, PATHINFO_EXTENSION));
-                if(strtolower($extension) == "pdf")
+                if(strtolower($extension) === "pdf")
                 {
-                    // Order Desc from new to old
-                    $i--;
+                    $i++; 
+
                     // if you want to order by Asc change the previous instruction to : $i++;
                     //echo $Entry[0]."<br>"; 
                     $filpdf = explode("_", $Entry);
-                    $msg = array($i, $Entry, $filpdf[1]);
-                    tr($msg);
                     $numboite = explode(".", $filpdf[1]);
-
                     $pieces = explode("..", $DirE);
+                    $docSize = taille($DirE);
 
-                    if($nbel==1)
-                    {
-                        $sql .= "INSERT INTO fichiers (nom_fich, lienfich, tailfich, numeboit, CIN_fich) VALUES ('{$Entry}', '{$DirE}', '{taille($DirE)}', '{$numboite[0]}', '{$filpdf[0]}')";
-                    }else
-                    {
-                        $sql .= "INSERT INTO fichiers (nom_fich, lienfich, tailfich, numeboit, CIN_fich) VALUES ('{$Entry}', '{$DirE}', '{taille($DirE)}', '{$numboite[0]}', '{$filpdf[0]}')";
-                    }
-                    insrerdoc($Entry,$Directory.'/'.$Entry,taille($Directory.'/'.$Entry),$numboite[0],$filpdf[0]);
-                    // echo $nbel." = ".$Entry." ;".$numboite[0]." ; ".$filpdf[0]."<br>";
+                    // Show the document info
+                    //tr([$i, $filpdf[0], $numboite[0]]);
+
+                    $sql .= "INSERT INTO fichiers (nom_fich, lienfich, tailfich, numeboit, CIN_fich) VALUES ('{$Entry}', '{$DirE}', '{$docSize}', '{$numboite[0]}', '{$filpdf[0]}');";
+
                     $nbel++;
                 }
             }
         }
-       insertmultiple($sql);
+        insertmultiple($sql);
         closedir($MyDirectory);
+
+        full_td("Done");
     }
     
     // Select numBoite
@@ -361,4 +356,42 @@
         }
         
         return false;
+    }
+
+    /**
+     * Load Scan directory files into table
+     *
+     * @return string
+     */
+    function loadScanDirIntoTable(string $dir) : string
+    {
+        $tableBody = "";
+        $resource = opendir($dir);
+        if(!$dir) return full_td("erreur est survenue");
+	
+        $i = 0;
+
+        while($file = @readdir($resource)) 
+        {
+            $filePath = $dir.'/'.$file;
+            if(is_file($filePath)){
+                $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                if(strtolower($extension) === "pdf")
+                {
+                    $i++; 
+
+                    $name = explode("_", $file);
+                    $box = explode(".", $name[1]);
+                    //$pieces = explode("..", $filePath);
+                    $docSize = taille($filePathDirE);
+
+                    // Show the document info
+                    $tableBody .= tr([$i, $name[0], $box[0]]);
+                }
+            }
+        }
+
+        closedir($dir);
+
+        return $tableBody;
     }
