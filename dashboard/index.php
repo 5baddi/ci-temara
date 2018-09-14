@@ -1,8 +1,13 @@
 <?php
     session_start();
 
+    error_reporting(0); // Disable error reporting
+
     require_once 'config.php';
     require_once 'functions.php';
+
+    if(!isLoggedIn()) header("Location: ../login"); // redirect if user not logged in
+
     $action = isset($_GET['action']) ? strip_tags($_GET['action']) : null;
     $menu = menu_active_page($action);
     include_once 'header.php';

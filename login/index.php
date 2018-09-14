@@ -1,6 +1,11 @@
 <?php
     session_start();
     
+    error_reporting(0); // Disable error reporting
+
+    require_once '../dashboard/functions.php';
+    if(isLoggedIn()) header("Location: ../dashboard"); // if user already logged in
+
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $email = isset($_POST['ci-email']) ? strip_tags($_POST['ci-email']) : null;
         $pass = isset($_POST['ci-pass']) ? strip_tags($_POST['ci-pass']) : null;
@@ -20,7 +25,7 @@
 
                         $_SESSION['ci_id'] = $user->id;
                         $_SESSION['ci_fullname'] = $user->fullname;
-                        $_SESSION['ci_last_log'] = $loggedAt;
+                        $_SESSION['ci_at'] = md5($loggedAt);
 
                         header('Location: ../dashboard');
                     }else{

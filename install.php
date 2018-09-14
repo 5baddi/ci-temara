@@ -4,7 +4,7 @@
      * more info visit : www.baddi.info
      */
 
-    //error_reporting(0);
+    error_reporting(0); // Disable error reporting
     set_time_limit(0); // to ignore MySQL server has gone away
 
      $connect = new mysqli("localhost", "root", "");

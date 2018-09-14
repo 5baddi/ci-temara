@@ -3,6 +3,7 @@
      * Developed by @5Baddi
      * more info visit : www.baddi.info
      */
+
     // Breadcrumb admin page
     function adm_page_breadcrumb($action){
             echo'<ol class="breadcrumb">';
@@ -342,6 +343,22 @@
      * @return boolean
      */
     function isLoggedIn()
-    {
+    {   
+        if(isset($_SESSION)){
+            $id = isset($_SESSION['ci_id']) ? intval($_SESSION['ci_id']) : null;
+            $loggedAt = isset($_SESSION['ci_at']) ? $_SESSION['ci_at'] : null;
 
+            if(is_null($id) || is_null($loggedAt)) return false; // check the id and loggedAt sessions was saved
+
+            require_once 'config.php';            
+            $db = connect(); // init the db connection
+            $result = $db->query("SELECT loggedAt FROM utilisateur WHERE id = '{$id}'"); // get the user with the saved id
+            
+            if($result->num_rows != 1) return false; // if not result return
+
+            $user = $result->fetch_object();
+            if(md5($user->loggedAt) === $loggedAt) return true; // finally the user was logged
+        }
+        
+        return false;
     }
