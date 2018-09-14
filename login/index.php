@@ -11,7 +11,7 @@
         $pass = isset($_POST['ci-pass']) ? strip_tags($_POST['ci-pass']) : null;
 
         $error = "";
-        if(!empty($email) && !empty($pass)){
+        if(!empty($email) &!empty($pass)){
             if(filter_var($email, FILTER_VALIDATE_EMAIL)){
                 require_once '../dashboard/config.php';
                 $db = connect();
