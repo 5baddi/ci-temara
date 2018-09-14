@@ -1,7 +1,7 @@
         </section>  
     </div>
   <footer class="main-footer">
-      <strong>Développer par&nbsp;<a href="http://i2singenierie.ma/" target="_blank">I2S INGENIERIE</a>.</strong>
+      <strong>Développer par&nbsp;<a href="http://www.baddi.info" target="_blank">@5Baddi</a>.</strong>
   </footer>
 </div>
 <?php getReadyToExport(); ?>
