@@ -256,10 +256,18 @@
     
     function ScanDirectory($Directory){
         global $file_existe;					
-        $MyDirectory = opendir($Directory) or die('Erreur');
-        $compteur = count_files($Directory);			
+        $MyDirectory = opendir($Directory) or die('Erreur');		
         $sql = "";
-        $nbel = 1;
+
+        // Charge exists docs
+        $db = connect();
+        $query = $db->query("SELECT nom_fich FROM fichiers");
+        $fetchedDocs = [];
+        if($query->num_rows > 0){
+            $fetchedDocs = array_map(function($row){
+                return $row[0];
+            }, mysqli_fetch_all($query, MYSQLI_NUM));
+        }
         
         //deletett();
         // Order Desc from new to the old
@@ -268,36 +276,24 @@
         while($Entry = @readdir($MyDirectory)) 
         {
             $DirE = $Directory.'/'.$Entry;
-            if(is_dir($DirE)&& $Entry != '.' && $Entry != '..')
-            {
-                //echo '<ul>'.$Directory;
-                $msg = ScanDirectory($DirE);
-                full_td($msg);
-                //echo '</ul>';
-            }else 
+            if(!is_dir($DirE) && $Entry != '.' && $Entry != '..') 
             {
                 $extension = strtolower(pathinfo($DirE, PATHINFO_EXTENSION));
-                if(strtolower($extension) === "pdf")
+                if(strtolower($extension) === "pdf" && !in_array($Entry, $fetchedDocs))
                 {
-                    $i++; 
-
-                    // if you want to order by Asc change the previous instruction to : $i++;
-                    //echo $Entry[0]."<br>"; 
+                    $i++;
+                    // Parse doc info
                     $filpdf = explode("_", $Entry);
                     $numboite = explode(".", $filpdf[1]);
                     $pieces = explode("..", $DirE);
                     $docSize = taille($DirE);
 
-                    // Show the document info
-                    //tr([$i, $filpdf[0], $numboite[0]]);
-
+                    // Add insert line for this doc
                     $sql .= "INSERT INTO fichiers (nom_fich, lienfich, tailfich, numeboit, CIN_fich) VALUES ('{$Entry}', '{$DirE}', '{$docSize}', '{$numboite[0]}', '{$filpdf[0]}');";
-
-                    $nbel++;
                 }
             }
         }
-        insertmultiple($sql);
+        if(!empty($sql)) insertmultiple($sql);
         closedir($MyDirectory);
 
         full_td("Done");
